@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Selected Transaction Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a08;
+    --paper: #f5f2eb;
+    --paper-dark: #ede9df;
+    --gold: #b8960c;
+    --gold-light: #d4af37;
+    --muted: #6b6757;
+    --border: #d4cfc3;
+    --border-strong: #a09880;
+    --accent-red: #8b1a1a;
+    --white: #fdfcf8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── TICKER TAPE ── */
+  .ticker-wrap {
+    background: var(--ink);
+    color: var(--gold-light);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 6px 0;
+    border-bottom: 1px solid #333;
+  }
+  .ticker-inner {
+    display: inline-block;
+    animation: ticker 30s linear infinite;
+  }
+  .ticker-inner span { margin: 0 2rem; }
+  .ticker-inner .up { color: #4caf50; }
+  .ticker-inner .down { color: #ef5350; }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 3rem 4rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .masthead::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 39px,
+      rgba(255,255,255,0.03) 39px,
+      rgba(255,255,255,0.03) 40px
+    );
+    pointer-events: none;
+  }
+  .masthead-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .masthead-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--gold-light);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .masthead h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 1rem;
+  }
+  .masthead h1 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+  .masthead-sub {
+    font-size: 13px;
+    color: #888;
+    font-weight: 300;
+    letter-spacing: 0.3px;
+    max-width: 500px;
+    line-height: 1.6;
+  }
+  .masthead-meta {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #222;
+  }
+  .meta-stat { }
+  .meta-stat .val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--paper);
+    line-height: 1;
+  }
+  .meta-stat .lbl {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #555;
+    margin-top: 4px;
+  }
+  .masthead-nav {
+    display: flex;
+    gap: 0;
+    margin-top: 2rem;
+  }
+  .nav-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #666;
+    padding: 8px 20px;
+    border: 1px solid #333;
+    border-right: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: transparent;
+  }
+  .nav-tab:last-child { border-right: 1px solid #333; }
+  .nav-tab:hover { background: #111; color: var(--paper); }
+  .nav-tab.active { background: var(--gold); color: var(--ink); border-color: var(--gold); font-weight: 500; }
+
+  /* ── MAIN LAYOUT ── */
+  .layout {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 4rem;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 3rem;
+  }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.3px;
+  }
+  .section-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── DEAL CARD ── */
+  .deal-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+  .deal-card:hover {
+    border-color: var(--border-strong);
+    box-shadow: 4px 4px 0 var(--paper-dark);
+  }
+  .deal-card-accent {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gold);
+  }
+
+  .deal-card-header {
+    padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  .deal-sector-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .deal-sector-tag::before {
+    content: '';
+    display: inline-block;
+    width: 4px; height: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+  .deal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 21px;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+  }
+  .deal-subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+  .deal-value-block { text-align: right; }
+  .deal-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 1;
+  }
+  .deal-type {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .deal-toggle {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── DEAL BODY ── */
+  .deal-body {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 1.75rem;
+  }
+  .deal-body.open { display: block; }
+
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    margin-bottom: 1.5rem;
+  }
+  .metric-cell {
+    background: var(--paper);
+    padding: 1rem;
+  }
+  .metric-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .metric-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1;
+  }
+  .metric-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+    font-weight: 300;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .field-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .field-value { font-size: 13px; line-height: 1.5; }
+
+  .advisors-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+    font-size: 13px;
+  }
+  .advisors-table thead th {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 0 0 8px;
+    font-weight: 400;
+    border-bottom: 1px solid var(--border);
+  }
+  .advisors-table tbody td {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--ink);
+    font-weight: 300;
+  }
+  .advisors-table tbody td:first-child { font-weight: 500; width: 30%; }
+  .advisors-table .role-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    display: block;
+    margin-top: 2px;
+  }
+
+  .rationale-section { margin-bottom: 1.5rem; }
+  .rationale-section p {
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: #333;
+    margin-bottom: 0.75rem;
+    font-weight: 300;
+  }
+  .rationale-section p:last-child { margin-bottom: 0; }
+
+  .analyst-view {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    border-left: 3px solid var(--gold);
+    position: relative;
+  }
+  .analyst-view-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+  .analyst-view p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-style: italic;
+    line-height: 1.6;
+    font-weight: 300;
+    color: #ddd;
+  }
+
+  .deal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    gap: 1rem;
+  }
+  .sources-block .field-label { margin-bottom: 6px; }
+  .source-item {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 300;
+    font-style: italic;
+    display: block;
+    line-height: 1.6;
+  }
+  .cvr-note {
+    background: #fffbf0;
+    border: 1px solid #e8d88a;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .cvr-note .field-label { color: #8a6d00; margin-bottom: 6px; }
+  .cvr-note p { font-size: 12px; color: #5a4800; line-height: 1.6; font-weight: 300; }
+
+  /* ── SIDEBAR ── */
+  .sidebar { }
+
+  .sidebar-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    padding: 1.25rem;
+  }
+  .sidebar-card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sector-bar { margin-bottom: 10px; }
+  .sector-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-bottom: 4px;
+    font-weight: 300;
+  }
+  .sector-bar-track {
+    height: 3px;
+    background: var(--paper-dark);
+    border-radius: 0;
+  }
+  .sector-bar-fill {
+    height: 100%;
+    background: var(--gold);
+  }
+
+  .checklist-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 1.4;
+  }
+  .check-icon {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .check-done { background: #2d5a27; color: white; }
+  .check-todo { background: var(--paper-dark); color: var(--muted); border: 1px solid var(--border); }
+
+  .new-deal-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: var(--ink);
+    color: var(--gold-light);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    transition: background 0.15s;
+    margin-bottom: 1.5rem;
+  }
+  .new-deal-btn:hover { background: #1a1a14; }
+
+  .tip-card {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .tip-card .tip-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+  .tip-card p {
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 1.6;
+    color: #aaa;
+  }
+  .tip-card strong { color: var(--paper); font-weight: 400; }
+
+  /* ── ADD DEAL MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--white);
+    border: 1px solid var(--border-strong);
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  .modal-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--paper);
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    opacity: 0.6;
+  }
+  .modal-close:hover { opacity: 1; }
+  .modal-body { padding: 2rem; }
+
+  .form-section-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    margin-top: 1.5rem;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .form-section-title:first-child { margin-top: 0; }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .form-row.full { grid-template-columns: 1fr; }
+  .form-group { display: flex; flex-direction: column; }
+  .form-group label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    background: var(--paper);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s;
+    border-radius: 0;
+    -webkit-appearance: none;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--gold); }
+  .form-group textarea { resize: vertical; min-height: 80px; }
+
+  .analyst-view-input {
+    background: #fffbf0 !important;
+    border-color: #e8d88a !important;
+    font-style: italic;
+  }
+  .analyst-view-input:focus { border-color: var(--gold) !important; }
+
+  .modal-footer {
+    padding: 1.25rem 2rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    background: var(--paper);
+    position: sticky;
+    bottom: 0;
+  }
+  .btn-cancel {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    background: none;
+    border: 1px solid var(--border-strong);
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .btn-cancel:hover { background: var(--paper-dark); }
+  .btn-save {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 24px;
+    background: var(--ink);
+    border: 1px solid var(--ink);
+    color: var(--gold-light);
+    cursor: pointer;
+  }
+  .btn-save:hover { background: #1a1a14; }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    display: none;
+  }
+  .empty-state.visible { display: block; }
+  .empty-state h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 300;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .empty-state p { font-size: 13px; color: var(--muted); font-weight: 300; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    color: #444;
+    padding: 2rem 4rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #1a1a14;
+  }
+  footer span { color: var(--gold); }
+
+  @media (max-width: 768px) {
+    .masthead { padding: 2rem 1.5rem; }
+    .layout { grid-template-columns: 1fr; padding: 2rem 1.5rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .metrics-row { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <span>AEM.TSX <span class="up">▲ 2.3%</span></span>
+    <span>RUP.TSX <span class="up">▲ 64.8%</span></span>
+    <span>GLD <span class="up">▲ 0.7%</span></span>
+    <span>GOLD/OZ $3,284.50 <span class="up">▲ 1.1%</span></span>
+    <span>CAD/USD 0.7321</span>
+    <span>AEM.TSX <span class="up">▲ 2.3%</span></span>
+    <span>RUP.TSX <span class="up">▲ 64.8%</span></span>
+    <span>GLD <span class="up">▲ 0.7%</span></span>
+    <span>GOLD/OZ $3,284.50 <span class="up">▲ 1.1%</span></span>
+    <span>CAD/USD 0.7321</span>
+  </div>
+</div>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-inner">
+    <div class="masthead-eyebrow">Canadian IB Research · M&A Coverage</div>
+    <h1>Selected<br><em>Transaction</em><br>Research</h1>
+    <p class="masthead-sub">Independent M&A analysis covering Canadian and cross-border transactions. Built to develop IB deal literacy and analytical rigour.</p>
+    <div class="masthead-meta">
+      <div class="meta-stat">
+        <div class="val" id="deal-count">1</div>
+        <div class="lbl">Transactions</div>
+      </div>
+      <div class="meta-stat">
+        <div class="val" id="total-val">C$2.9B</div>
+        <div class="lbl">Total Deal Value</div>
+      </div>
+      <div class="meta-stat">
+        <div class="val" id="sector-count">1</div>
+        <div class="lbl">Sectors</div>
+      </div>
+      <div class="meta-stat">
+        <div class="val">2026</div>
+        <div class="lbl">Coverage Year</div>
+      </div>
+    </div>
+    <div class="masthead-nav">
+      <div class="nav-tab active">All Deals</div>
+      <div class="nav-tab">Mining</div>
+      <div class="nav-tab">Energy</div>
+      <div class="nav-tab">Financials</div>
+      <div class="nav-tab">Tech</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="layout">
+  <main>
+    <div class="section-header">
+      <div class="section-title">Transaction Coverage</div>
+      <div class="section-count" id="deal-label">1 deal · sorted by date</div>
+    </div>
+
+    <div id="deals-container">
+
+      <!-- DEAL 1: AGNICO / RUPERT -->
+      <div class="deal-card" data-sector="mining">
+        <div class="deal-card-accent"></div>
+        <div class="deal-card-header" onclick="toggleDeal(this)">
+          <div>
+            <div class="deal-sector-tag">Mining &amp; Resources · Finland</div>
+            <div class="deal-title">Agnico Eagle Mines acquires Rupert Resources</div>
+            <div class="deal-subtitle">TSX: AEM acquires TSX: RUP · April 20, 2026</div>
+          </div>
+          <div class="deal-value-block">
+            <div class="deal-amount">C$2.9B</div>
+            <div class="deal-type">All Stock · Dilutive</div>
+            <div class="deal-toggle">▼ expand</div>
+          </div>
+        </div>
+        <div class="deal-body">
+          <!-- METRICS -->
+          <div class="metrics-row">
+            <div class="metric-cell">
+              <div class="metric-label">Offer premium</div>
+              <div class="metric-value">67%</div>
+              <div class="metric-sub">vs. TSX close Apr 17, 2026</div>
+            </div>
+            <div class="metric-cell">
+              <div class="metric-label">Exchange ratio</div>
+              <div class="metric-value">0.0401×</div>
+              <div class="metric-sub">AEM shares per RUP share</div>
+            </div>
+            <div class="metric-cell">
+              <div class="metric-label">Implied price</div>
+              <div class="metric-value">C$12.00</div>
+              <div class="metric-sub">USD 8.82 per RUP share</div>
+            </div>
+          </div>
+
+          <!-- CVR NOTE -->
+          <div class="cvr-note">
+            <div class="field-label">Contingent Value Rights (CVR) — up to C$3.00 additional</div>
+            <p>Three C$1.00 milestone tranches: (1) announcement of ≥5M oz gold reserves; (2) commercial production + 7.5M oz aggregate; (3) commercial production + 10M oz aggregate. Total potential consideration: C$15.00 per share over 10 years.</p>
+          </div>
+
+          <!-- PARTIES -->
+          <table class="advisors-table">
+            <thead><tr><th>Party</th><th>Role</th><th>Advisor(s)</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>Agnico Eagle (AEM)<span class="role-tag">Buyer</span></td>
+                <td>Financial</td>
+                <td>TD Securities, Edgehill Advisory</td>
+              </tr>
+              <tr>
+                <td>Rupert Resources (RUP)<span class="role-tag">Target</span></td>
+                <td>Financial</td>
+                <td>BMO Capital Markets</td>
+              </tr>
+              <tr>
+                <td>Rupert Special Committee<span class="role-tag">Independent</span></td>
+                <td>Valuator + Fairness</td>
+                <td>Origin Merchant Partners</td>
+              </tr>
+              <tr>
+                <td>Agnico Eagle<span class="role-tag">Buyer</span></td>
+                <td>Legal</td>
+                <td>Davies Ward Phillips &amp; Vineberg LLP</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- CONTEXT -->
+          <div class="two-col">
+            <div>
+              <div class="field-label">Jurisdiction</div>
+              <div class="field-value">Finland — Central Lapland Greenstone Belt (Tier-1)</div>
+            </div>
+            <div>
+              <div class="field-label">Land package post-deal</div>
+              <div class="field-value">2,492 km² around Ikkari gold discovery</div>
+            </div>
+            <div>
+              <div class="field-label">Agnico prior ownership</div>
+              <div class="field-value">13.9% of RUP (triggered MI 61-101 minority approval)</div>
+            </div>
+            <div>
+              <div class="field-label">Jefferies NAV accretion</div>
+              <div class="field-value">~2% accretive to Agnico NAV/share (combined transactions)</div>
+            </div>
+          </div>
+
+          <!-- RATIONALE -->
+          <div class="rationale-section">
+            <div class="field-label" style="margin-bottom:10px;">Strategic Rationale</div>
+            <p>AEM acquired the remaining stake in Rupert Resources to consolidate assets in Finland's Central Lapland Greenstone Belt. The transaction objective is consolidating assets around the Ikkari gold discovery, one of Europe's largest undeveloped deposits.</p>
+            <p>This transaction complemented the acquisition of Aurion Resources and B2Gold's 70% stake at Feingold. Combining the deals, AEM now controls a 2,492 km² land package around the Ikkari gold discovery, improving development coordination and increasing long-term production visibility in a Tier-1 jurisdiction.</p>
+            <p>Jefferies noted the move underscores AEM's strategy of building regional platforms to unlock operational synergies, rather than pursuing geographically dispersed acquisitions. The firm's rationale is to eliminate fragmented ownership, accelerate development, and extract operational synergies of up to USD $365 million.</p>
+          </div>
+
+          <!-- ANALYST VIEW -->
+          <div class="analyst-view">
+            <div class="analyst-view-label">Analyst View</div>
+            <p>"The deal makes strategic sense as AEM already owned 13.9% of RUP. However, the Ikkari region is not yet an operating mine. Therefore, Agnico structured it so RUP shareholders only get the full C$15.00 if the project is delivered. That protects Agnico, making the deal buyer-friendly."</p>
+          </div>
+
+          <!-- FOOTER -->
+          <div class="deal-footer">
+            <div class="sources-block">
+              <div class="field-label">Sources</div>
+              <span class="source-item">Rupert Resources Ltd. / Business Wire (April 20, 2026)</span>
+              <span class="source-item">Dow Jones Institutional News (April 20, 2026)</span>
+              <span class="source-item">Newstex Finance &amp; Accounting Blogs (April 20, 2026)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="empty-state" id="empty-state">
+      <h3>No transactions yet</h3>
+      <p>Add your first deal using the button in the sidebar.</p>
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <button class="new-deal-btn" onclick="openModal()">+ Add New Transaction</button>
+
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">Coverage by Sector</div>
+      <div class="sector-bar">
+        <div class="sector-bar-label"><span>Mining &amp; Resources</span><span>1</span></div>
+        <div class="sector-bar-track"><div class="sector-bar-fill" style="width:100%"></div></div>
+      </div>
+      <div class="sector-bar">
+        <div class="sector-bar-label"><span>Energy</span><span>0</span></div>
+        <div class="sector-bar-track"><div class="sector-bar-fill" style="width:0%"></div></div>
+      </div>
+      <div class="sector-bar">
+        <div class="sector-bar-label"><span>Financials</span><span>0</span></div>
+        <div class="sector-bar-track"><div class="sector-bar-fill" style="width:0%"></div></div>
+      </div>
+      <div class="sector-bar">
+        <div class="sector-bar-label"><span>Technology</span><span>0</span></div>
+        <div class="sector-bar-track"><div class="sector-bar-fill" style="width:0%"></div></div>
+      </div>
+      <div class="sector-bar">
+        <div class="sector-bar-label"><span>Industrials</span><span>0</span></div>
+        <div class="sector-bar-track"><div class="sector-bar-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">Deal Quality Checklist</div>
+      <div class="checklist-item">
+        <div class="check-icon check-done">✓</div>
+        <span>Deal structure identified</span>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon check-done">✓</div>
+        <span>Offer premium stated with reference date</span>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon check-done">✓</div>
+        <span>Advisors correctly attributed by side</span>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon check-done">✓</div>
+        <span>CVR / contingent consideration included</span>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon check-done">✓</div>
+        <span>Strategic rationale in own words</span>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon check-done">✓</div>
+        <span>Analyst view included</span>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon check-todo">○</div>
+        <span>EV/NAV multiple (pending circular)</span>
+      </div>
+      <div class="checklist-item">
+        <div class="check-icon check-todo">○</div>
+        <span>Precedent transaction comps</span>
+      </div>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-label">Recruiter Tip</div>
+      <p>Aim for <strong>8–10 deals</strong> across at least 3 sectors before recruiting season. Canadian IB analysts cover mining, energy, and financials most heavily — prioritise those first.</p>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">Next Deal Ideas</div>
+      <div style="font-size:12px; font-weight:300; line-height:1.8; color:var(--muted);">
+        <div>→ A Canadian energy deal</div>
+        <div>→ A bank / insurance M&A</div>
+        <div>→ A cross-border tech deal</div>
+        <div>→ A privatisation / take-private</div>
+        <div>→ A hostile takeover bid</div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Add New Transaction</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="form-section-title">Deal Header</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Acquirer / Buyer</label>
+          <input type="text" id="f-buyer" placeholder="e.g. Royal Bank of Canada">
+        </div>
+        <div class="form-group">
+          <label>Target Company</label>
+          <input type="text" id="f-target" placeholder="e.g. HSBC Canada">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Transaction Value</label>
+          <input type="text" id="f-value" placeholder="e.g. C$13.5B">
+        </div>
+        <div class="form-group">
+          <label>Deal Structure</label>
+          <select id="f-structure">
+            <option value="">Select...</option>
+            <option>All Cash</option>
+            <option>All Stock, Dilutive</option>
+            <option>Mixed (Cash + Stock)</option>
+            <option>All Stock, Accretive</option>
+            <option>Asset Purchase</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Sector</label>
+          <select id="f-sector">
+            <option value="">Select...</option>
+            <option>Mining &amp; Resources</option>
+            <option>Energy</option>
+            <option>Financials</option>
+            <option>Technology</option>
+            <option>Industrials</option>
+            <option>Real Estate</option>
+            <option>Healthcare</option>
+            <option>Consumer</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Announcement Date</label>
+          <input type="date" id="f-date">
+        </div>
+      </div>
+
+      <div class="form-section-title">Valuation Metrics</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Offer Premium</label>
+          <input type="text" id="f-premium" placeholder="e.g. 32% to 30-day VWAP">
+        </div>
+        <div class="form-group">
+          <label>EV/EBITDA or EV/NAV Multiple</label>
+          <input type="text" id="f-multiple" placeholder="e.g. 8.2× EV/EBITDA">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Exchange Ratio / Consideration Details</label>
+          <input type="text" id="f-ratio" placeholder="e.g. 0.1234 acquirer shares per target share, valued at C$42.00">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Contingent / CVR Structure (if applicable)</label>
+          <input type="text" id="f-cvr" placeholder="e.g. Up to $2.00 contingent on regulatory approval by Q3 2027">
+        </div>
+      </div>
+
+      <div class="form-section-title">Parties &amp; Advisors</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Buyer Financial Advisor(s)</label>
+          <input type="text" id="f-buyer-advisor" placeholder="e.g. Goldman Sachs, RBC Capital Markets">
+        </div>
+        <div class="form-group">
+          <label>Target Financial Advisor(s)</label>
+          <input type="text" id="f-target-advisor" placeholder="e.g. TD Securities, Scotiabank">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Buyer Legal Counsel</label>
+          <input type="text" id="f-buyer-legal" placeholder="e.g. Osler, Hoskin &amp; Harcourt LLP">
+        </div>
+        <div class="form-group">
+          <label>Target Legal Counsel</label>
+          <input type="text" id="f-target-legal" placeholder="e.g. Stikeman Elliott LLP">
+        </div>
+      </div>
+
+      <div class="form-section-title">Deal Context</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Jurisdiction(s)</label>
+          <input type="text" id="f-jurisdiction" placeholder="e.g. Canada (Ontario) — Tier-1">
+        </div>
+        <div class="form-group">
+          <label>Regulatory Notes</label>
+          <input type="text" id="f-regulatory" placeholder="e.g. Requires Competition Bureau approval">
+        </div>
+      </div>
+
+      <div class="form-section-title">Rationale &amp; Analysis</div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Strategic Rationale</label>
+          <textarea id="f-rationale" placeholder="Describe why the buyer is doing this deal — synergies, market consolidation, geographic expansion, vertical integration..."></textarea>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Your Analytical View ★</label>
+          <textarea id="f-view" class="analyst-view-input" placeholder="Your independent assessment — did the buyer pay a fair price? Who got the better end of the deal? What's the key risk?"></textarea>
+        </div>
+      </div>
+
+      <div class="form-section-title">Sources</div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Sources (one per line)</label>
+          <textarea id="f-sources" placeholder="Press release — Company IR / Business Wire (Date)&#10;Globe and Mail (Date)&#10;SEDAR+ filing"></textarea>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveNewDeal()">Save Transaction →</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div>Selected Transaction Research &nbsp;·&nbsp; <span>Canadian IB Coverage</span> &nbsp;·&nbsp; Built for recruiting</div>
+  <div>Last updated: <span>April 2026</span></div>
+</footer>
+
+<script>
+  function toggleDeal(header) {
+    const body = header.nextElementSibling;
+    const toggle = header.querySelector('.deal-toggle');
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    toggle.textContent = isOpen ? '▼ expand' : '▲ collapse';
+  }
+
+  function openModal() {
+    document.getElementById('modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  function saveNewDeal() {
+    const buyer = document.getElementById('f-buyer').value.trim();
+    const target = document.getElementById('f-target').value.trim();
+    const value = document.getElementById('f-value').value.trim();
+    const structure = document.getElementById('f-structure').value;
+    const sector = document.getElementById('f-sector').value;
+    const date = document.getElementById('f-date').value;
+    const premium = document.getElementById('f-premium').value.trim();
+    const multiple = document.getElementById('f-multiple').value.trim();
+    const ratio = document.getElementById('f-ratio').value.trim();
+    const cvr = document.getElementById('f-cvr').value.trim();
+    const buyerAdvisor = document.getElementById('f-buyer-advisor').value.trim();
+    const targetAdvisor = document.getElementById('f-target-advisor').value.trim();
+    const buyerLegal = document.getElementById('f-buyer-legal').value.trim();
+    const jurisdiction = document.getElementById('f-jurisdiction').value.trim();
+    const rationale = document.getElementById('f-rationale').value.trim();
+    const view = document.getElementById('f-view').value.trim();
+    const sources = document.getElementById('f-sources').value.trim();
+
+    if (!buyer || !target || !value) {
+      alert('Please fill in at least Buyer, Target, and Transaction Value.');
+      return;
+    }
+
+    const formattedDate = date ? new Date(date + 'T12:00:00').toLocaleDateString('en-CA', { year:'numeric', month:'long', day:'numeric' }) : '';
+    const sourcesHtml = sources ? sources.split('\n').filter(s=>s.trim()).map(s => `<span class="source-item">${s.trim()}</span>`).join('') : '';
+
+    const card = document.createElement('div');
+    card.className = 'deal-card';
+    card.dataset.sector = sector.toLowerCase().replace(/[^a-z]/g,'');
+
+    card.innerHTML = `
+      <div class="deal-card-accent"></div>
+      <div class="deal-card-header" onclick="toggleDeal(this)">
+        <div>
+          <div class="deal-sector-tag">${sector || 'Sector TBD'}${jurisdiction ? ' · ' + jurisdiction.split('—')[0].trim() : ''}</div>
+          <div class="deal-title">${buyer} acquires ${target}</div>
+          <div class="deal-subtitle">${formattedDate ? formattedDate : 'Date TBD'}</div>
+        </div>
+        <div class="deal-value-block">
+          <div class="deal-amount">${value}</div>
+          <div class="deal-type">${structure || 'Structure TBD'}</div>
+          <div class="deal-toggle">▼ expand</div>
+        </div>
+      </div>
+      <div class="deal-body">
+        <div class="metrics-row">
+          <div class="metric-cell">
+            <div class="metric-label">Offer premium</div>
+            <div class="metric-value">${premium || '—'}</div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-label">EV multiple</div>
+            <div class="metric-value" style="font-size:16px">${multiple || '—'}</div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-label">Consideration</div>
+            <div class="metric-value" style="font-size:14px; line-height:1.3">${ratio || '—'}</div>
+          </div>
+        </div>
+        ${cvr ? `<div class="cvr-note"><div class="field-label">Contingent Consideration / CVR</div><p>${cvr}</p></div>` : ''}
+        <table class="advisors-table">
+          <thead><tr><th>Party</th><th>Role</th><th>Advisor</th></tr></thead>
+          <tbody>
+            ${buyerAdvisor ? `<tr><td>${buyer}<span class="role-tag">Buyer</span></td><td>Financial</td><td>${buyerAdvisor}</td></tr>` : ''}
+            ${targetAdvisor ? `<tr><td>${target}<span class="role-tag">Target</span></td><td>Financial</td><td>${targetAdvisor}</td></tr>` : ''}
+            ${buyerLegal ? `<tr><td>${buyer}<span class="role-tag">Buyer</span></td><td>Legal</td><td>${buyerLegal}</td></tr>` : ''}
+          </tbody>
+        </table>
+        ${jurisdiction ? `<div class="two-col" style="margin-bottom:1.5rem"><div><div class="field-label">Jurisdiction</div><div class="field-value">${jurisdiction}</div></div></div>` : ''}
+        ${rationale ? `<div class="rationale-section"><div class="field-label" style="margin-bottom:10px">Strategic Rationale</div><p>${rationale}</p></div>` : ''}
+        ${view ? `<div class="analyst-view"><div class="analyst-view-label">Analyst View</div><p>"${view}"</p></div>` : ''}
+        <div class="deal-footer">
+          <div class="sources-block">
+            <div class="field-label">Sources</div>
+            ${sourcesHtml || '<span class="source-item">No sources added</span>'}
+          </div>
+        </div>
+      </div>`;
+
+    document.getElementById('deals-container').prepend(card);
+
+    // Update count
+    const count = document.querySelectorAll('.deal-card').length;
+    document.getElementById('deal-count').textContent = count;
+    document.getElementById('deal-label').textContent = `${count} deal${count !== 1 ? 's' : ''} · sorted by date`;
+
+    // Clear form
+    document.querySelectorAll('#modal input, #modal textarea, #modal select').forEach(el => el.value = '');
+    closeModal();
+
+    // Scroll to new card
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Nav tab filter
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      const filter = this.textContent.toLowerCase().replace(/[^a-z]/g, '');
+      document.querySelectorAll('.deal-card').forEach(card => {
+        if (filter === 'alldeals' || card.dataset.sector.includes(filter)) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
